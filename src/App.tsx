@@ -26,7 +26,7 @@ const triggerMailto = (emailHref: string) => {
   // Create a temporary link and click it to reliably trigger the email client
   const link = document.createElement('a');
   link.href = emailHref;
-  link.target = '_blank';
+  // Removed target="_blank" to prevent opening a blank tab
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
