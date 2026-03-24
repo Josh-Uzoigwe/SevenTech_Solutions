@@ -36,14 +36,10 @@ const Button = ({ children, variant = 'primary', className = '', href, onClick }
   
   const handleClick = (e: React.MouseEvent) => {
     if (isMailto) {
-      e.preventDefault(); // Prevent default to ensure we handle both copy and redirect reliably
       const email = href.replace('mailto:', '');
       navigator.clipboard.writeText(email).catch(() => {});
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      
-      // Force the mailto link to open the email client
-      window.location.href = href;
     }
     if (onClick) onClick(e);
   };
