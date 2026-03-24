@@ -36,10 +36,14 @@ const Button = ({ children, variant = 'primary', className = '', href, onClick }
   
   const handleClick = (e: React.MouseEvent) => {
     if (isMailto) {
+      e.preventDefault(); // Prevent default to ensure we handle both copy and redirect reliably
       const email = href.replace('mailto:', '');
       navigator.clipboard.writeText(email).catch(() => {});
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      
+      // Force the mailto link to open the email client
+      window.location.href = href;
     }
     if (onClick) onClick(e);
   };
@@ -48,7 +52,7 @@ const Button = ({ children, variant = 'primary', className = '', href, onClick }
     <Component 
       href={href} 
       onClick={handleClick}
-      target={isExternalHttp ? "_blank" : (isMailto ? "_top" : undefined)}
+      target={isExternalHttp ? "_blank" : undefined}
       rel={isExternalHttp ? "noopener noreferrer" : undefined}
       className={`${baseStyle} ${variants[variant as keyof typeof variants]} ${className}`}
     >
@@ -404,7 +408,7 @@ const Footer = () => {
         <div>
           <h4 className="font-mono text-sm uppercase tracking-widest text-white/30 mb-6">Comms</h4>
           <ul className="space-y-4 font-mono text-sm uppercase">
-            <li><a href={`mailto:${EMAIL_ADDRESS}`} target="_top" className="hover:text-[var(--color-accent)] transition-colors">{EMAIL_ADDRESS}</a></li>
+            <li><a href={`mailto:${EMAIL_ADDRESS}`} className="hover:text-[var(--color-accent)] transition-colors">{EMAIL_ADDRESS}</a></li>
             <li><a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-accent)] transition-colors">+234 811 913 2994</a></li>
           </ul>
         </div>
