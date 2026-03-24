@@ -19,6 +19,19 @@ const WHATSAPP_NUMBER = "2348119132994";
 const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}`;
 const EMAIL_ADDRESS = "seventechsolu@gmail.com";
 
+const triggerMailto = (emailHref: string) => {
+  const email = emailHref.replace('mailto:', '');
+  navigator.clipboard.writeText(email).catch(() => {});
+  
+  // Create a temporary link and click it to reliably trigger the email client
+  const link = document.createElement('a');
+  link.href = emailHref;
+  link.target = '_blank';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 // --- Reusable Components ---
 
 const Button = ({ children, variant = 'primary', className = '', href, onClick }: any) => {
@@ -36,8 +49,8 @@ const Button = ({ children, variant = 'primary', className = '', href, onClick }
   
   const handleClick = (e: React.MouseEvent) => {
     if (isMailto) {
-      const email = href.replace('mailto:', '');
-      navigator.clipboard.writeText(email).catch(() => {});
+      e.preventDefault();
+      triggerMailto(href);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -379,6 +392,8 @@ const FinalCTA = () => {
 };
 
 const Footer = () => {
+  const [copied, setCopied] = useState(false);
+  
   return (
     <footer className="bg-[var(--color-bg)] pt-16 pb-8 px-6 md:px-12">
       <div className="grid md:grid-cols-4 gap-12 mb-16">
@@ -404,7 +419,20 @@ const Footer = () => {
         <div>
           <h4 className="font-mono text-sm uppercase tracking-widest text-white/30 mb-6">Comms</h4>
           <ul className="space-y-4 font-mono text-sm uppercase">
-            <li><a href={`mailto:${EMAIL_ADDRESS}`} className="hover:text-[var(--color-accent)] transition-colors">{EMAIL_ADDRESS}</a></li>
+            <li>
+              <a 
+                href={`mailto:${EMAIL_ADDRESS}`} 
+                onClick={(e) => {
+                  e.preventDefault();
+                  triggerMailto(`mailto:${EMAIL_ADDRESS}`);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+                className="hover:text-[var(--color-accent)] transition-colors"
+              >
+                {copied ? "Email Copied!" : EMAIL_ADDRESS}
+              </a>
+            </li>
             <li><a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-accent)] transition-colors">+234 811 913 2994</a></li>
           </ul>
         </div>
